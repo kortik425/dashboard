@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
+
 import {
   createColumnHelper,
   flexRender,
@@ -16,7 +17,7 @@ interface UsersProps {
 
 const columnHelper = createColumnHelper<User>();
 
-const columns = [
+const createColumns = (fetchPosts: (userId: number) => Promise<void>) => [
   columnHelper.accessor("name", {
     cell: (info) => info.getValue(),
   }),
@@ -31,13 +32,15 @@ const columns = [
     header: () => <p>Actions</p>,
     cell: (props) => {
       console.log(props.row);
-      return <div>Actions, edit etc</div>;
+      const { id } = props.row.original;
+      return <button onClick={() => fetchPosts(id)}>open posts</button>;
     },
   }),
 ];
 
 const Users: React.FC<UsersProps> = ({}) => {
-  const { users } = useDataContext();
+  const { users, posts, fetchPosts } = useDataContext();
+  const columns = useMemo(() => createColumns(fetchPosts), [fetchPosts]);
 
   const userTable = useReactTable({
     data: users,
@@ -45,33 +48,41 @@ const Users: React.FC<UsersProps> = ({}) => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <table>
-      <thead>
-        {userTable.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <th key={header.id}>
-                {flexRender(
-                  header.column.columnDef.header,
-                  header.getContext()
-                )}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {userTable.getRowModel().rows.map((row) => (
-          <tr key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <table>
+        <thead>
+          {userTable.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {userTable.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div>
+        {posts.length !== 0 &&
+          posts.map((post) => {
+            return <p key={post.id}> {post.title}</p>;
+          })}
+      </div>
+    </>
   );
 };
 
