@@ -27,7 +27,9 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`antialiased`}>
         <Sidebar />
-        <DataProvider initialState={initialUsers}>{children}</DataProvider>
+        <main>
+          <DataProvider initialState={initialUsers}>{children}</DataProvider>
+        </main>
       </body>
     </html>
   );
