@@ -33,12 +33,14 @@ export default async function RootLayout({
   const initialUsers = await getUsers();
   return (
     <html lang="en">
-      <body className={`antialiased ${spaceGrotesk.className} px-6 pt-7`}>
-        <h1 className="page-heading">Dashboard</h1>
-        <Sidebar />
-        <main>
-          <DataProvider initialState={initialUsers}>{children}</DataProvider>
-        </main>
+      <body
+        className={`antialiased ${spaceGrotesk.className} grid grid-cols-[240px_minmax(900px,_1fr)] grid-rows-[auto_1fr] max-h-[100dvh] box-border`}
+      >
+        <h1 className="page-heading col-start-2 px-6">Dashboard</h1>
+        <aside className="bg-black row-start-1 row-end-3">
+          <Sidebar />
+        </aside>
+        <DataProvider initialState={initialUsers}>{children}</DataProvider>
       </body>
     </html>
   );
