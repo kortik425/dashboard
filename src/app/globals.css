@@ -25,9 +25,14 @@ body {
   h2 {
     @apply font-bold text-black text-2xl;
   }
-  
-  h3 {
+
+  h3,
+  .stilised-h3 {
     @apply font-bold text-black text-xl;
+  }
+
+  .stilised-p-500 {
+    @apply font-medium text-black text-base;
   }
 
   h1.page-heading {
