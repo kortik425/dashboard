@@ -7,6 +7,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  pull-requests: write
+  
 jobs:
   create_pr:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
@@ -15,9 +19,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh
 
       - name: Set up Git config for Automated PR
         run: |
@@ -46,5 +47,7 @@ jobs:
           fi
 
       - name: Create New Pull Request from stage to main
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           gh pr create --base main --head stage --title "${{ env.PR_TITLE }}" --body "Automatically created pull request from stage to main."
