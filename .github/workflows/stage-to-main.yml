@@ -16,9 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh
-
       - name: Set up Git config for Automated PR
         run: |
           git config --global user.email "bot-email@example.com"
@@ -26,6 +23,8 @@ jobs:
 
       - name: Determine Next PR Title
         id: pr-title
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           TODAY=$(date +'%Y%m%d')
           
