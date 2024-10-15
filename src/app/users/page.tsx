@@ -3,13 +3,14 @@ import React, { useMemo } from "react";
 
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
+import { Card } from "@/components/UI";
 import { useDataContext } from "@/contexts/data";
 import { User } from "@/interfaces/Idata";
+import { TableRow, TableHeader } from "@/components/table";
 
 interface UsersProps {
   // define your props here
@@ -18,20 +19,18 @@ interface UsersProps {
 const columnHelper = createColumnHelper<User>();
 
 const createColumns = (fetchPosts: (userId: number) => Promise<void>) => [
-  columnHelper.accessor("name", {
-    cell: (info) => info.getValue(),
-  }),
   columnHelper.accessor("username", {
+    header: "Username",
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("email", {
+    header: "Email",
     cell: (info) => info.getValue(),
   }),
   columnHelper.display({
     id: "actions",
     header: () => <p>Actions</p>,
     cell: (props) => {
-      console.log(props.row);
       const { id } = props.row.original;
       return <button onClick={() => fetchPosts(id)}>open posts</button>;
     },
@@ -47,42 +46,38 @@ const Users: React.FC<UsersProps> = ({}) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const showPost = (e: React.MouseEvent) => {
+    console.log(e);
+  };
+
   return (
-    <>
+    <main className="px-4 pt-6 flex gap-x-12 items-start overflow-hidden">
       <table>
-        <thead>
-          {userTable.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+        <TableHeader headerGroups={userTable.getHeaderGroups()} />
         <tbody>
           {userTable.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
+            <TableRow key={row.id} row={row} />
           ))}
         </tbody>
       </table>
-      <div>
-        {posts.length !== 0 &&
-          posts.map((post) => {
-            return <p key={post.id}> {post.title}</p>;
-          })}
+      <div className="h-[100%] flex flex-col flex-1">
+        <h2>Posts</h2>
+        <div className="overflow-y-auto">
+          {posts.length !== 0 &&
+            posts.map((post) => {
+              return (
+                <Card
+                  key={post.id}
+                  title={post.title}
+                  className="mb-5"
+                  onClick={showPost}
+                />
+              );
+            })}
+        </div>
       </div>
-    </>
+    </main>
   );
 };
 
