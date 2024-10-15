@@ -4,9 +4,9 @@
 
 :root {
   --primary-dark: #424242;
-  --secondary-dark: #80868F;
-  --primary-light: #EFF7FC;
-  --secondary-light: #D7E5EA;
+  --secondary-dark: #80868f;
+  --primary-light: #eff7fc;
+  --secondary-light: #d7e5ea;
 }
 
 html {
@@ -21,7 +21,7 @@ body {
   h1 {
     @apply font-bold text-black text-[32px];
   }
-  
+
   h2 {
     @apply font-bold text-black text-2xl;
   }
@@ -46,8 +46,9 @@ body {
 
 @layer components {
   .component-shadow {
-    filter: drop-shadow(4px 0px 4px rgba(0,0,0,0.25));
+    filter: drop-shadow(4px 0px 4px rgba(0, 0, 0, 0.25));
   }
+
   table {
     border-collapse: separate;
     border-spacing: 0 12px;
