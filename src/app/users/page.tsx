@@ -1,52 +1,16 @@
 "use client";
-import React, { useMemo } from "react";
-
-import {
-  createColumnHelper,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import React from "react";
 
 import { Card, TextInput } from "@/components/UI";
 import { useDataContext } from "@/contexts/data";
-import { User } from "@/interfaces/Idata";
-import { TableRow, TableHeader } from "@/components/table";
+
 import searchIcon from "../../assets/search.svg";
+import UserTable from "./user-table";
 
-interface UsersProps {
-  // define your props here
-}
-
-const columnHelper = createColumnHelper<User>();
-
-const createColumns = (fetchPosts: (userId: number) => Promise<void>) => [
-  columnHelper.accessor("username", {
-    header: "Username",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("email", {
-    header: "Email",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.display({
-    id: "actions",
-    header: () => <p>Actions</p>,
-    cell: (props) => {
-      const { id } = props.row.original;
-      return <button onClick={() => fetchPosts(id)}>open posts</button>;
-    },
-  }),
-];
+interface UsersProps {}
 
 const Users: React.FC<UsersProps> = ({}) => {
-  const { users, posts, fetchPosts } = useDataContext();
-  const columns = useMemo(() => createColumns(fetchPosts), [fetchPosts]);
-
-  const userTable = useReactTable({
-    data: users,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+  const { posts } = useDataContext();
 
   const showPost = (e: React.MouseEvent) => {
     console.log(e);
@@ -69,14 +33,7 @@ const Users: React.FC<UsersProps> = ({}) => {
         </TextInput>
       </header>
       <section className=" flex gap-x-12 items-start overflow-hidden">
-        <table>
-          <TableHeader headerGroups={userTable.getHeaderGroups()} />
-          <tbody>
-            {userTable.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} row={row} />
-            ))}
-          </tbody>
-        </table>
+        <UserTable />
         <div className="h-[100%] flex flex-col flex-1">
           <h2>Posts</h2>
           <div className="overflow-y-auto">
