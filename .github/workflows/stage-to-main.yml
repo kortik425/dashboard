@@ -1,0 +1,50 @@
+name: Create New Versioned Pull Request After Merge
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  create_pr:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh
+
+      - name: Set up Git config for Automated PR
+        run: |
+          git config --global user.email "bot-email@example.com"
+          git config --global user.name "Automated PR Bot"
+
+      - name: Determine Next PR Title
+        id: pr-title
+        run: |
+          TODAY=$(date +'%Y%m%d')
+          
+          # Check for existing PRs with today's date
+          EXISTING_PR=$(gh pr list --state closed --base main --head stage --search "PR: $TODAY" --json title --jq '.[] | select(.title | contains("PR: '"$TODAY"'")) | .title')
+          
+          if [[ -z "$EXISTING_PR" ]]; then
+            echo "PR_TITLE=PR: $TODAY" >> $GITHUB_ENV
+          else
+            # Extract the latest version number, increment it, or set to v1 if not present
+            VERSION=$(echo "$EXISTING_PR" | grep -oP '(v\K\d+)' | sort -n | tail -n 1)
+            if [[ -z "$VERSION" ]]; then
+              NEXT_VERSION=1
+            else
+              NEXT_VERSION=$((VERSION + 1))
+            fi
+            echo "PR_TITLE=PR: $TODAY v$NEXT_VERSION" >> $GITHUB_ENV
+          fi
+
+      - name: Create New Pull Request from stage to main
+        run: |
+          gh pr create --base main --head stage --title "${{ env.PR_TITLE }}" --body "Automatically created pull request from stage to main."
