@@ -17,7 +17,7 @@ const Users: React.FC<UsersProps> = ({}) => {
   };
 
   return (
-    <main className="overflow-hidden flex flex-col px-4 pt-6">
+    <main className="overflow-hidden flex flex-col px-4 pt-6 ">
       <header>
         <TextInput
           label="Search User"
@@ -32,7 +32,7 @@ const Users: React.FC<UsersProps> = ({}) => {
           </button>
         </TextInput>
       </header>
-      <section className=" flex gap-x-12 items-start overflow-hidden">
+      <section className="flex flex-1 gap-x-12 items-start overflow-hidden">
         <UserTable />
         <div className="h-[100%] flex flex-col flex-1">
           <h2>Posts</h2>
