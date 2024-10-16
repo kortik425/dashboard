@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -11,6 +11,7 @@ import { User } from "@/interfaces/Idata";
 import { useDataContext } from "@/contexts/data";
 import { TableHeader, TableRow } from "@/components/table";
 import { TextInput } from "@/components/UI";
+import ActionsColumn from "./actions-column";
 
 interface UserTableProps {
   filters?: string;
@@ -18,7 +19,7 @@ interface UserTableProps {
 
 const columnHelper = createColumnHelper<User>();
 
-const createColumns = (fetchPosts: (userId: number) => Promise<void>) => [
+const columns = [
   columnHelper.accessor("name", {
     header: "Name",
     cell: (info) => info.getValue(),
@@ -34,10 +35,7 @@ const createColumns = (fetchPosts: (userId: number) => Promise<void>) => [
   columnHelper.display({
     id: "actions",
     header: () => <p>Actions</p>,
-    cell: (props) => {
-      const { id } = props.row.original;
-      return <button onClick={() => fetchPosts(id)}>open posts</button>;
-    },
+    cell: (props) => <ActionsColumn userId={props.row.original.id} />,
   }),
 ];
 
@@ -54,8 +52,7 @@ const customFilterFn = (
 
 const UserTable: React.FC<UserTableProps> = ({ filters }) => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 7 });
-  const { users, fetchPosts } = useDataContext();
-  const columns = useMemo(() => createColumns(fetchPosts), [fetchPosts]);
+  const { users } = useDataContext();
   const userTable = useReactTable({
     data: users,
     columns,
