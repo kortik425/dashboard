@@ -5,6 +5,7 @@ import "./globals.css";
 import { DataProvider } from "@/contexts/data";
 import Sidebar from "@/components/sidebar/sidebar";
 import { User } from "@/interfaces/Idata";
+import { ModalProvider } from "@/contexts/modals";
 
 export const metadata: Metadata = {
   title: "Demo dashboard app",
@@ -40,7 +41,9 @@ export default async function RootLayout({
         <aside className="bg-black row-start-1 row-end-3">
           <Sidebar />
         </aside>
-        <DataProvider initialState={initialUsers}>{children}</DataProvider>
+        <DataProvider initialState={initialUsers}>
+          <ModalProvider>{children}</ModalProvider>
+        </DataProvider>
       </body>
     </html>
   );
