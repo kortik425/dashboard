@@ -52,9 +52,9 @@ const customFilterFn = (
 
 const UserTable: React.FC<UserTableProps> = ({ filters }) => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 7 });
-  const { users } = useDataContext();
+  const { usersList } = useDataContext();
   const userTable = useReactTable({
-    data: users,
+    data: usersList,
     columns,
     state: { pagination, globalFilter: filters },
     globalFilterFn: customFilterFn,
