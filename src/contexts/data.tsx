@@ -9,9 +9,11 @@ import {
 import { User, Post } from "@/interfaces/Idata";
 
 interface DataContextType {
-  users: User[];
-  fetchPosts: (userId: number) => Promise<void>;
+  usersList: User[];
   posts: Post[];
+  fetchPosts: (userId: number) => Promise<void>;
+  fetchUser: (userId: number) => Promise<void>;
+  user: User | null;
 }
 
 interface DataProviderProps {
@@ -25,8 +27,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({
   children,
   initialState,
 }) => {
-  const [users] = useState<User[]>(initialState);
+  const [usersList] = useState<User[]>(initialState);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [user, setUser] = useState<User | null>(null);
 
   const fetchPosts = useCallback(async (userId: number) => {
     try {
@@ -40,8 +43,22 @@ export const DataProvider: React.FC<DataProviderProps> = ({
     }
   }, []);
 
+  const fetchUser = useCallback(async (userId: number) => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/users/${userId}`
+      );
+      const data: User = await response.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  }, []);
+
   return (
-    <DataContext.Provider value={{ users, posts, fetchPosts }}>
+    <DataContext.Provider
+      value={{ usersList, posts, fetchPosts, fetchUser, user }}
+    >
       {children}
     </DataContext.Provider>
   );
