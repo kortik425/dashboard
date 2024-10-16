@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import { Card, TextInput } from "@/components/UI";
 import { useDataContext } from "@/contexts/data";
@@ -10,10 +10,15 @@ import UserTable from "./user-table";
 interface UsersProps {}
 
 const Users: React.FC<UsersProps> = ({}) => {
+  const [filters, setFilters] = useState("");
   const { posts } = useDataContext();
 
   const showPost = (e: React.MouseEvent) => {
     console.log(e);
+  };
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters(e.target.value);
   };
 
   return (
@@ -23,6 +28,8 @@ const Users: React.FC<UsersProps> = ({}) => {
           label="Search User"
           icon={{ img: searchIcon, alt: "search-icon" }}
           isLabelHidden
+          value={filters}
+          onChange={handleInput}
         >
           <button
             className="bg-secondaryLight rounded-[6px] px-2 m-1"
@@ -33,7 +40,7 @@ const Users: React.FC<UsersProps> = ({}) => {
         </TextInput>
       </header>
       <section className="flex flex-1 gap-x-12 items-start overflow-hidden">
-        <UserTable />
+        <UserTable filters={filters} />
         <div className="h-[100%] flex flex-col flex-1">
           <h2>Posts</h2>
           <div className="overflow-y-auto">

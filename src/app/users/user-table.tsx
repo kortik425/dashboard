@@ -4,15 +4,25 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  getFilteredRowModel,
+  Row,
 } from "@tanstack/react-table";
 import { User } from "@/interfaces/Idata";
 import { useDataContext } from "@/contexts/data";
 import { TableHeader, TableRow } from "@/components/table";
 import { TextInput } from "@/components/UI";
 
+interface UserTableProps {
+  filters?: string;
+}
+
 const columnHelper = createColumnHelper<User>();
 
 const createColumns = (fetchPosts: (userId: number) => Promise<void>) => [
+  columnHelper.accessor("name", {
+    header: "Name",
+    cell: (info) => info.getValue(),
+  }),
   columnHelper.accessor("username", {
     header: "Username",
     cell: (info) => info.getValue(),
@@ -31,18 +41,30 @@ const createColumns = (fetchPosts: (userId: number) => Promise<void>) => [
   }),
 ];
 
-const UserTable = () => {
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 7 });
+const customFilterFn = (
+  row: Row<User>,
+  _columnId: string,
+  filterValue: string
+) => {
+  const search = `${row.original.name} ${row.original.username}`
+    .toLowerCase()
+    .includes(filterValue);
+  return search;
+};
 
+const UserTable: React.FC<UserTableProps> = ({ filters }) => {
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 7 });
   const { users, fetchPosts } = useDataContext();
   const columns = useMemo(() => createColumns(fetchPosts), [fetchPosts]);
   const userTable = useReactTable({
     data: users,
     columns,
-    state: { pagination },
+    state: { pagination, globalFilter: filters },
+    globalFilterFn: customFilterFn,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
