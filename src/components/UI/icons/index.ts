@@ -1,0 +1,9 @@
+export { default as OverviewIcon } from "./overview";
+export { default as SearchIcon } from "./search";
+export { default as EditUserIcon } from "./edit-user";
+export { default as EditIcon } from "./edit";
+export { default as ExpandIcon } from "./expand";
+export { default as IdcardIcon } from "./idcard";
+export { default as SettingsIcon } from "./settings";
+export { default as TrashIcon } from "./trash";
+export { default as UsersIcon } from "./users";
