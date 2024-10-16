@@ -20,6 +20,7 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     img: string;
     alt: string;
   };
+  iconComponent?: React.ReactElement;
   type?: TextInputTypes;
   label: string;
   isLabelHidden?: boolean;
@@ -30,6 +31,7 @@ const TextInput: React.FC<TextInputProps> = ({
   label,
   children,
   icon,
+  iconComponent,
   isLabelHidden = false,
   type = "text",
   ...rest
@@ -45,10 +47,11 @@ const TextInput: React.FC<TextInputProps> = ({
         {label}
       </label>
       <div
-        className="flex h-10 pl-2 rounded-lg bg-white max-w-[520px] border transition duration-150 ease-in-out focus-within:ring-2 focus-within:ring-blue-500"
+        className="flex h-10 pl-2 rounded-lg bg-white max-w-[520px] border transition duration-150 ease-in-out focus-within:ring-2 focus-within:ring-blue-500 items-center"
         aria-hidden="true"
       >
         {icon && <Image src={icon.img} alt={icon.alt} width={24} height={24} />}
+        {iconComponent && iconComponent}
         <input
           {...rest}
           id={textId}

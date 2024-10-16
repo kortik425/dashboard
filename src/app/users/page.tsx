@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Card, TextInput } from "@/components/UI";
 import { useDataContext } from "@/contexts/data";
 
-import searchIcon from "../../assets/search.svg";
+import { SearchIcon } from "@/components/UI/icons";
 import UserTable from "./components/user-table";
 import Modal from "@/components/modal/modal";
 import { useModal } from "@/contexts/modals";
@@ -30,7 +30,7 @@ const Users: React.FC<UsersProps> = ({}) => {
         <header>
           <TextInput
             label="Search User"
-            icon={{ img: searchIcon, alt: "search-icon" }}
+            iconComponent={<SearchIcon />}
             isLabelHidden
             value={filters}
             onChange={handleInput}

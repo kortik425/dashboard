@@ -1,8 +1,7 @@
 import React, { memo } from "react";
 import { useDataContext } from "@/contexts/data";
 import { IconButton } from "@/components/UI";
-import overviewIcon from "../../../assets/overview.svg";
-import idCardIcon from "../../../assets/idCard.svg";
+import { OverviewIcon, IdcardIcon } from "@/components/UI/icons";
 import { useModal } from "@/contexts/modals";
 
 interface ActionsColumnProps {
@@ -23,13 +22,13 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({ userId }) => {
       <div className="flex gap-2">
         <IconButton
           onClick={() => fetchPosts(userId)}
-          src={overviewIcon}
+          icon={<OverviewIcon />}
           alt={`Posts for user: ${userId}`}
           tooltip="Show Posts"
         />
         <IconButton
           onClick={() => handleclic(userId)}
-          src={idCardIcon}
+          icon={<IdcardIcon />}
           alt="Open User infos"
           tooltip="Open User infos"
         />

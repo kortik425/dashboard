@@ -7,17 +7,20 @@ const Button: React.FC<ButtonProps> = ({}) => {
   return <div></div>;
 };
 
+/** @TODO: Component API should be changed to omogenize it througout the project */
 export default Button;
 
 interface IconButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  src: string;
+  src?: string;
+  icon?: React.ReactElement;
   alt: string;
   tooltip?: string;
 }
 
 export const IconButton: React.FC<IconButtonProps> = ({
-  src,
+  src = "",
+  icon,
   alt,
   tooltip,
   ...rest
@@ -29,7 +32,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       aria-describedby={tooltip && tooltipId}
       {...rest}
     >
-      <Image width={24} height={24} src={src} alt={alt} />
+      {icon ? icon : <Image width={24} height={24} src={src} alt={alt} />}
       {tooltip && (
         <div
           id={tooltipId}
