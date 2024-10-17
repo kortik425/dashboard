@@ -8,11 +8,11 @@ const TableHeader = <T extends object>({
   headerGroups,
 }: TableHeaderProps<T>) => {
   return (
-    <thead className="border-b border-black">
+    <thead>
       {headerGroups.map((headerGroup) => (
         <tr key={headerGroup.id}>
           {headerGroup.headers.map((header) => (
-            <th key={header.id} className="stilised-h3">
+            <th key={header.id} className="stilised-h3 text-left">
               {flexRender(header.column.columnDef.header, header.getContext())}
             </th>
           ))}

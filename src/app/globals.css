@@ -74,6 +74,9 @@ body {
     border-top-right-radius: 0.5em;
     border-bottom-right-radius: 0.5em;
   }
+  .custom-button-style {
+    @apply rounded-2xl bg-secondaryDark h-10 min-w-36 flex justify-center items-center text-white stilised-p-500 hover:bg-primaryDark;
+  }
 }
 
 @layer utilities {

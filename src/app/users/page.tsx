@@ -1,83 +1,107 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useEffect, useState } from "react";
 
-import {
-  createColumnHelper,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
-import { Card } from "@/components/UI";
+import { TextInput } from "@/components/UI";
 import { useDataContext } from "@/contexts/data";
-import { User } from "@/interfaces/Idata";
-import { TableRow, TableHeader } from "@/components/table";
 
-interface UsersProps {
-  // define your props here
-}
+import { SearchIcon } from "@/components/UI/icons";
+import UserTable from "./components/user-table";
+import Modal from "@/components/modal/modal";
+import { useModal } from "@/contexts/modals";
+import UserContent from "./components/user-content";
+import Link from "next/link";
+import Button from "@/components/UI/button";
+import PostList from "./components/post-list";
+import PostContent from "./components/post-content";
+import AddPostContent from "./components/add-post-content";
 
-const columnHelper = createColumnHelper<User>();
-
-const createColumns = (fetchPosts: (userId: number) => Promise<void>) => [
-  columnHelper.accessor("username", {
-    header: "Username",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("email", {
-    header: "Email",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.display({
-    id: "actions",
-    header: () => <p>Actions</p>,
-    cell: (props) => {
-      const { id } = props.row.original;
-      return <button onClick={() => fetchPosts(id)}>open posts</button>;
-    },
-  }),
-];
+interface UsersProps {}
 
 const Users: React.FC<UsersProps> = ({}) => {
-  const { users, posts, fetchPosts } = useDataContext();
-  const columns = useMemo(() => createColumns(fetchPosts), [fetchPosts]);
+  const [filters, setFilters] = useState("");
+  const { isOpen, closeModal, modalId } = useModal();
+  const { user } = useDataContext();
 
-  const userTable = useReactTable({
-    data: users,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+  useEffect(() => {
+    return () => {
+      if (isOpen) closeModal();
+    };
+  }, [closeModal]);
 
-  const showPost = (e: React.MouseEvent) => {
-    console.log(e);
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters(e.target.value);
   };
-
+  const isShowPostModal = modalId?.toString().includes("post-");
+  const isShowUserModal = modalId?.toString().includes("user-");
+  const isAddPostModal = modalId?.toString().includes("add-post");
   return (
-    <main className="px-4 pt-6 flex gap-x-12 items-start overflow-hidden">
-      <table>
-        <TableHeader headerGroups={userTable.getHeaderGroups()} />
-        <tbody>
-          {userTable.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} row={row} />
-          ))}
-        </tbody>
-      </table>
-      <div className="h-[100%] flex flex-col flex-1">
-        <h2>Posts</h2>
-        <div className="overflow-y-auto">
-          {posts.length !== 0 &&
-            posts.map((post) => {
-              return (
-                <Card
-                  key={post.id}
-                  title={post.title}
-                  className="mb-5"
-                  onClick={showPost}
-                />
-              );
-            })}
-        </div>
-      </div>
-    </main>
+    <>
+      <main className="overflow-hidden flex flex-col px-4 pt-6 ">
+        <header>
+          <TextInput
+            label="Search User"
+            iconComponent={<SearchIcon />}
+            isLabelHidden
+            value={filters}
+            onChange={handleInput}
+            containerClassName="max-w-[580px]"
+          >
+            <button
+              className="bg-secondaryLight rounded-[6px] px-2 m-1"
+              onClick={() => {
+                console.log("This could be a generic action");
+              }}
+            >
+              Action
+            </button>
+          </TextInput>
+        </header>
+        <section className="flex flex-1 gap-x-12 items-start overflow-hidden">
+          <UserTable filters={filters} />
+          <PostList />
+        </section>
+      </main>
+      {isShowUserModal && (
+        <Modal
+          title={"User Informations"}
+          isModalOpen={isOpen}
+          footer={
+            <footer className="pt-8 flex flex-row-reverse gap-4">
+              {
+                <Link
+                  href={`/users/${user?.id}`}
+                  className="custom-button-style"
+                >
+                  {" "}
+                  Go to User{" "}
+                </Link>
+              }
+              <Button variant="secondary" type="button" onClick={closeModal}>
+                {"Close"}
+              </Button>
+            </footer>
+          }
+        >
+          <UserContent user={user} />
+        </Modal>
+      )}{" "}
+      {isShowPostModal && (
+        <Modal title={" "} isModalOpen={isOpen} abortFn={closeModal}>
+          <PostContent />
+        </Modal>
+      )}
+      {isAddPostModal && (
+        <Modal
+          title={"Add new Post"}
+          isModalOpen={isOpen}
+          abortFn={closeModal}
+          proceedFn={() => {}}
+          proceedLabel="Save"
+        >
+          <AddPostContent />
+        </Modal>
+      )}
+    </>
   );
 };
 
