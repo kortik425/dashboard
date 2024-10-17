@@ -94,9 +94,17 @@ const Users: React.FC<UsersProps> = ({}) => {
         <Modal
           title={"Add new Post"}
           isModalOpen={isOpen}
-          abortFn={closeModal}
-          proceedFn={() => {}}
-          proceedLabel="Save"
+          footer={
+            <footer className="pt-8 flex flex-row-reverse gap-4">
+              <Button type="submit" form="new-post" variant={"primary"}>
+                {" "}
+                Save{" "}
+              </Button>
+              <Button variant="secondary" type="button" onClick={closeModal}>
+                {"Close"}
+              </Button>
+            </footer>
+          }
         >
           <AddPostContent />
         </Modal>
