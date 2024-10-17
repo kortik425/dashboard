@@ -1,9 +1,9 @@
 import { Post } from "@/interfaces/Idata";
 
 export enum PostActions {
-  POST_FETCHING,
-  POST_READY,
-  POST_ERROR,
+  POST_FETCHING = "POST_FETCHING",
+  POST_READY = "POST_READY",
+  POST_ERROR = "POST_ERROR",
 }
 
 export type PostActionType =

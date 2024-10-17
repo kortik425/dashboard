@@ -1,10 +1,10 @@
 import { Post } from "@/interfaces/Idata";
 
 export enum PostListAction {
-  POST_LIST_FETCHING,
-  POST_LIST_INSERT,
-  POST_LIST_READY,
-  POST_LIST_ERROR,
+  POST_LIST_FETCHING = "POST_LIST_FETCHING",
+  POST_LIST_INSERT = "POST_LIST_INSERT",
+  POST_LIST_READY = "POST_LIST_READY",
+  POST_LIST_ERROR = "POST_LIST_ERROR",
 }
 
 export type PostListActionType =
@@ -30,7 +30,7 @@ export const postListReducer = (
 ) => {
   switch (action.type) {
     case PostListAction.POST_LIST_FETCHING:
-      return { ...state, loading: true, posts: [], error: null };
+      return { ...state, loading: true, error: null };
     case PostListAction.POST_LIST_INSERT:
       return {
         ...state,

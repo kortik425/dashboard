@@ -14,17 +14,21 @@ import {
   postListReducer,
   postListInitialState,
 } from "./modules/post-list";
+import { UserActions, UserReducer, UserInitialState } from "./modules/user";
 
+type postParameter = Omit<Post, "id" | "userId">;
 interface DataContextType {
   usersList: User[];
   fetchPostsList: (userId: number) => Promise<void>;
   fetchUser: (userId: number) => Promise<void>;
   fetchPost: (postId: number) => Promise<void>;
-  insertPost: (post: Post) => Promise<void>;
+  insertPost: (post: postParameter) => Promise<void>;
   user: User | null;
   post: Post | null;
   postList: Post[];
-  status: { error: string | null; loading: boolean };
+  postStatus: { error: string | null; loading: boolean };
+  postListStatus: { error: string | null; loading: boolean };
+  userStatus: { error: string | null; loading: boolean };
 }
 
 interface DataProviderProps {
@@ -39,30 +43,35 @@ export const DataProvider: React.FC<DataProviderProps> = ({
   initialState,
 }) => {
   const [usersList] = useState<User[]>(initialState);
-  const [postList, postListdispatch] = useReducer(
+
+  const [postListState, postListDispatcher] = useReducer(
     postListReducer,
     postListInitialState
   );
-  const [user, setUser] = useState<User | null>(null);
-
-  const [post, dispatch] = useReducer(postReducer, postInitialState);
+  const [userState, userDispatcher] = useReducer(UserReducer, UserInitialState);
+  const [postState, postDispatcher] = useReducer(postReducer, postInitialState);
 
   const fetchPostsList = useCallback(async (userId: number) => {
-    postListdispatch({ type: PostListAction.POST_LIST_FETCHING });
+    postListDispatcher({ type: PostListAction.POST_LIST_FETCHING });
+    userDispatcher({ type: UserActions.USER_GET_ID, payload: userId });
     try {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/users/${userId}/posts`
       );
       const data: Post[] = await response.json();
-      postListdispatch({ type: PostListAction.POST_LIST_READY, payload: data });
+
+      postListDispatcher({
+        type: PostListAction.POST_LIST_READY,
+        payload: data,
+      });
     } catch (error) {
       if (error instanceof Error) {
-        postListdispatch({
+        postListDispatcher({
           type: PostListAction.POST_LIST_ERROR,
           payload: error.message,
         });
       } else {
-        postListdispatch({
+        postListDispatcher({
           type: PostListAction.POST_LIST_ERROR,
           payload: String(error),
         });
@@ -71,84 +80,121 @@ export const DataProvider: React.FC<DataProviderProps> = ({
   }, []);
 
   const fetchUser = useCallback(async (userId: number) => {
+    userDispatcher({ type: UserActions.USER_FETCHING });
     try {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/users/${userId}`
       );
       const data: User = await response.json();
-      setUser(data);
+      userDispatcher({ type: UserActions.USER_READY, payload: data });
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   }, []);
 
-  const fetchPost = useCallback(async (postId: number) => {
-    dispatch({ type: PostActions.POST_FETCHING });
-
-    try {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/${postId}`
+  const fetchPost = useCallback(
+    async (postId: number) => {
+      const fetchedPost = postListState.posts.find(
+        (elem: Post) => elem.id === postId
       );
-      if (!response.ok) {
-        throw new Error(`Error: Failed to fetch post with ID ${postId}`);
-      }
-      const data: Post = await response.json();
-      dispatch({ type: PostActions.POST_READY, payload: data });
-    } catch (error) {
-      if (error instanceof Error) {
-        dispatch({ type: PostActions.POST_ERROR, payload: error.message });
-      } else {
-        dispatch({ type: PostActions.POST_ERROR, payload: String(error) });
-      }
-    }
-  }, []);
 
-  const insertPost = useCallback(async (newPost: Post) => {
-    try {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/`,
-        {
-          method: "POST",
-          body: JSON.stringify(newPost),
+      if (!!fetchedPost) {
+        postDispatcher({ type: PostActions.POST_READY, payload: fetchedPost });
+        return;
+      }
+
+      postDispatcher({ type: PostActions.POST_FETCHING });
+      try {
+        const response = await fetch(
+          `https://jsonplaceholder.typicode.com/posts/${postId}`
+        );
+        if (!response.ok) {
+          throw new Error(`Error: Failed to fetch post with ID ${postId}`);
         }
-      );
-      if (!response.ok) {
-        throw new Error(`Error: Failed to POST new post`);
+        const data: Post = await response.json();
+        postDispatcher({ type: PostActions.POST_READY, payload: data });
+      } catch (error) {
+        if (error instanceof Error) {
+          postDispatcher({
+            type: PostActions.POST_ERROR,
+            payload: error.message,
+          });
+        } else {
+          postDispatcher({
+            type: PostActions.POST_ERROR,
+            payload: String(error),
+          });
+        }
       }
-      const data: Post = await response.json();
-      postListdispatch({
-        type: PostListAction.POST_LIST_INSERT,
-        payload: data,
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        postListdispatch({
-          type: PostListAction.POST_LIST_ERROR,
-          payload: error.message,
+    },
+    [postListState]
+  );
+
+  const insertPost = useCallback(
+    async (newPost: postParameter) => {
+      const uid = userState.user?.id;
+      try {
+        const response = await fetch(
+          `https://jsonplaceholder.typicode.com/posts/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...newPost,
+              userId: uid,
+            }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`Error: Failed to POST new post`);
+        }
+        const data: Post = await response.json();
+
+        postListDispatcher({
+          type: PostListAction.POST_LIST_INSERT,
+          payload: data,
         });
-      } else {
-        postListdispatch({
-          type: PostListAction.POST_LIST_ERROR,
-          payload: String(error),
-        });
+      } catch (error) {
+        if (error instanceof Error) {
+          postListDispatcher({
+            type: PostListAction.POST_LIST_ERROR,
+            payload: error.message,
+          });
+        } else {
+          postListDispatcher({
+            type: PostListAction.POST_LIST_ERROR,
+            payload: String(error),
+          });
+        }
       }
-    }
-  }, []);
+    },
+    [userState.user?.id]
+  );
 
   return (
     <DataContext.Provider
       value={{
         usersList,
-        postList: postList.posts,
-        post: post.post,
-        user,
+        postList: postListState.posts,
+        post: postState.post,
+        user: userState.user,
         fetchPostsList,
         fetchUser,
         fetchPost,
         insertPost,
-        status: {
-          error: postList.error || post.error || null,
-          loading: postList.loading || post.loading,
+        postStatus: {
+          error: postState.error || null,
+          loading: postState.loading,
+        },
+        postListStatus: {
+          error: postListState.error || null,
+          loading: postListState.loading,
+        },
+        userStatus: {
+          error: userState.error || null,
+          loading: userState.loading,
         },
       }}
     >
