@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Card, TextInput } from "@/components/UI";
 import { useDataContext } from "@/contexts/data";
@@ -16,9 +16,11 @@ const Users: React.FC<UsersProps> = ({}) => {
   const { isOpen, closeModal } = useModal();
   const { posts, user } = useDataContext();
 
-  const showPost = (e: React.MouseEvent) => {
-    console.log(e);
-  };
+  useEffect(() => {
+    return () => {
+      if (isOpen) closeModal();
+    };
+  }, [closeModal]);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters(e.target.value);
