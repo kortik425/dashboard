@@ -9,19 +9,19 @@ interface ActionsColumnProps {
 }
 
 const ActionsColumn: React.FC<ActionsColumnProps> = ({ userId }) => {
-  const { fetchPosts, fetchUser } = useDataContext();
+  const { fetchPostsList, fetchUser } = useDataContext();
   const { openModal } = useModal();
 
   const handleclick = (userId: number) => {
     fetchUser(userId);
-    openModal(userId);
+    openModal(`user-${userId}`);
   };
 
   return (
     <>
       <div className="flex gap-2">
         <IconButton
-          onClick={() => fetchPosts(userId)}
+          onClick={() => fetchPostsList(userId)}
           icon={<OverviewIcon />}
           alt={`Posts for user: ${userId}`}
           tooltip="Show Posts"
