@@ -26,6 +26,8 @@ jobs:
           git config --global user.name "Automated PR Bot"
 
       - name: Determine Next PR Title
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: pr-title
         run: |
           TODAY=$(date +'%Y%m%d')
