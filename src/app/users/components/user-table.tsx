@@ -7,7 +7,7 @@ import {
   getFilteredRowModel,
   Row,
 } from "@tanstack/react-table";
-import { User } from "@/interfaces/Idata";
+import { CompleteUser } from "@/interfaces/Idata";
 import { useDataContext } from "@/contexts/data";
 import { TableHeader, TableRow } from "@/components/table";
 import { TextInput } from "@/components/UI";
@@ -17,7 +17,7 @@ interface UserTableProps {
   filters?: string;
 }
 
-const columnHelper = createColumnHelper<User>();
+const columnHelper = createColumnHelper<CompleteUser>();
 
 const columns = [
   columnHelper.accessor("name", {
@@ -40,7 +40,7 @@ const columns = [
 ];
 
 const customFilterFn = (
-  row: Row<User>,
+  row: Row<CompleteUser>,
   _columnId: string,
   filterValue: string
 ) => {
@@ -54,7 +54,7 @@ const UserTable: React.FC<UserTableProps> = ({ filters }) => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 7 });
   const { usersList } = useDataContext();
   const userTable = useReactTable({
-    data: usersList,
+    data: usersList as CompleteUser[],
     columns,
     state: { pagination, globalFilter: filters },
     globalFilterFn: customFilterFn,
