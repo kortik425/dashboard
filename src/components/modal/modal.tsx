@@ -40,22 +40,17 @@ const Modal: React.FC<ModalProps> = ({
   if (!isModalOpen) return;
   return (
     <div
-      className="fixed inset-0 z-10 flex items-center justify-center p-4 text-center bg-black bg-opacity-20"
+      className="fixed inset-0 z-10 flex items-center justify-center p-9 text-center bg-black bg-opacity-20"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
     >
       <dialog
-        className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl"
+        className="relative min-w-[800px] max-w-lg bg-white rounded-2xl shadow-xl"
         open
       >
-        <section className="px-4 py-5 text-left">
-          <h3
-            className="text-base font-semibold text-gray-900"
-            id="modal-title"
-          >
-            {title}
-          </h3>
+        <section className="p-9 text-left">
+          <h2 id="modal-title">{title}</h2>
           {children}
           <ModalFooter
             footer={footer}
@@ -88,21 +83,25 @@ const ModalFooter: React.FC<ModalFooterProps> = ({
   if (!!footer) return footer;
 
   return (
-    <footer className="px-4 py-3 bg-gray-50 flex flex-row-reverse">
-      <button
-        type="button"
-        className="ml-3 inline-flex justify-center rounded-md bg-primaryDark px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-secondaryDark"
-        onClick={proceedFn}
-      >
-        {proceedLabel || "Ok"}
-      </button>
-      <button
-        type="button"
-        className="mt-3 inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0"
-        onClick={abortFn}
-      >
-        {abortLabel || "Cancel"}
-      </button>
+    <footer className="pt-8 flex flex-row-reverse">
+      {proceedFn && (
+        <button
+          type="button"
+          className="ml-3 inline-flex justify-center rounded-md bg-primaryDark px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-secondaryDark"
+          onClick={proceedFn}
+        >
+          {proceedLabel || "Ok"}
+        </button>
+      )}
+      {abortFn && (
+        <button
+          type="button"
+          className="mt-3 inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0"
+          onClick={abortFn}
+        >
+          {abortLabel || "Cancel"}
+        </button>
+      )}
     </footer>
   );
 };
