@@ -44,10 +44,13 @@ const Users: React.FC<UsersProps> = ({}) => {
             isLabelHidden
             value={filters}
             onChange={handleInput}
+            containerClassName="max-w-[580px]"
           >
             <button
               className="bg-secondaryLight rounded-[6px] px-2 m-1"
-              onClick={() => {}}
+              onClick={() => {
+                console.log("This could be a generic action");
+              }}
             >
               Action
             </button>
