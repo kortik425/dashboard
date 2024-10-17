@@ -1,10 +1,20 @@
 import React, { useId } from "react";
 import Image from "next/image";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant: "priamry" | "secondary";
+}
 
-const Button: React.FC<ButtonProps> = ({}) => {
-  return <div></div>;
+const Button: React.FC<ButtonProps> = ({ children, variant, ...rest }) => {
+  const variantStyle =
+    variant === "secondary"
+      ? "bg-secondaryLight text-primaryDark border border-black hover:bg-primaryLight"
+      : "";
+  return (
+    <button className={`custom-button-style ${variantStyle}`} {...rest}>
+      {children}
+    </button>
+  );
 };
 
 /** @TODO: Component API should be changed to omogenize it througout the project */
