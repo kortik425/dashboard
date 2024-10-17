@@ -8,20 +8,20 @@ interface PostListProps {
 }
 
 const PostList: React.FC<PostListProps> = ({}) => {
-  const { fetchPost, posts, user } = useDataContext();
-  const { openModal } = useModal();
+  const { fetchPost, postList, user, postListStatus } = useDataContext();
 
+  const { openModal } = useModal();
   const showPost = (e: React.MouseEvent, postId: number) => {
     fetchPost(postId);
     openModal(`post-${postId}`);
   };
-  const isEmpty = posts.length === 0;
-  const isUnselected = false; //!userId;
+  const isEmpty = postList.length === 0;
+  const isUnselected = !user?.id;
 
   return (
     <section className="h-[100%] flex flex-col flex-1 max-w-96">
       <header className="flex justify-between">
-        <h2>Posts {user?.username}</h2>
+        <h2>postList</h2>
         <button
           onClick={() => {
             openModal("add-post");
@@ -33,6 +33,10 @@ const PostList: React.FC<PostListProps> = ({}) => {
         </button>
       </header>
       <div className="overflow-y-auto pt-2">
+        {!!postListStatus.error && (
+          <h1 className="text-red-700">{postListStatus.error}</h1>
+        )}
+        {!!postListStatus.loading && <h1>...Loading</h1>}
         {isUnselected && (
           <h1 className="text-secondaryLight">
             Select a user to see the posts here
@@ -41,8 +45,8 @@ const PostList: React.FC<PostListProps> = ({}) => {
         {isEmpty && !isUnselected && (
           <h1 className="text-secondaryLight">No post to show</h1>
         )}
-        {posts.length !== 0 &&
-          posts.map((post) => {
+        {postList.length !== 0 &&
+          postList.toReversed().map((post) => {
             return (
               <Card
                 key={post.id}

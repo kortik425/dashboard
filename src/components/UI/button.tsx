@@ -2,7 +2,7 @@ import React, { useId } from "react";
 import Image from "next/image";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant: "priamry" | "secondary";
+  variant: "primary" | "secondary";
 }
 
 const Button: React.FC<ButtonProps> = ({ children, variant, ...rest }) => {

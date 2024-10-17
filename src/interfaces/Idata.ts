@@ -1,4 +1,4 @@
-export interface User {
+export interface CompleteUser {
   id: number;
   name: string;
   username: string;
@@ -21,6 +21,10 @@ export interface User {
     bs: string;
   };
 }
+
+type uid = Pick<CompleteUser, "id">;
+
+export type User = CompleteUser | uid;
 
 export interface Post {
   userId: number;

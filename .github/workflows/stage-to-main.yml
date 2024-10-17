@@ -10,7 +10,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  
+
 jobs:
   create_pr:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
@@ -29,10 +29,10 @@ jobs:
         id: pr-title
         run: |
           TODAY=$(date +'%Y%m%d')
-          
+
           # Check for existing PRs with today's date
           EXISTING_PR=$(gh pr list --state closed --base main --head stage --search "PR: $TODAY" --json title --jq '.[] | select(.title | contains("PR: '"$TODAY"'")) | .title')
-          
+
           if [[ -z "$EXISTING_PR" ]]; then
             echo "PR_TITLE=PR: $TODAY" >> $GITHUB_ENV
           else
@@ -47,7 +47,8 @@ jobs:
           fi
 
       - name: Create New Pull Request from stage to main
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          gh pr create --base main --head stage --title "${{ env.PR_TITLE }}" --body "Automatically created pull request from stage to main."
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Add Pull Request
+          title: "[${{ env.PR_TITLE }}]"
+          body: "Automatically created pull request from stage to main"
