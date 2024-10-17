@@ -24,6 +24,7 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   type?: TextInputTypes;
   label: string;
   isLabelHidden?: boolean;
+  containerClassName?: string;
   children?: React.ReactElement;
 }
 
@@ -34,12 +35,13 @@ const TextInput: React.FC<TextInputProps> = ({
   iconComponent,
   isLabelHidden = false,
   type = "text",
+  containerClassName,
   ...rest
 }) => {
   const textId = useId();
 
   return (
-    <>
+    <div aria-hidden="true" className={containerClassName}>
       <label
         htmlFor={textId}
         className={`${isLabelHidden ? "sr-only" : "stilised-p-500 pl-2"}`}
@@ -47,7 +49,7 @@ const TextInput: React.FC<TextInputProps> = ({
         {label}
       </label>
       <div
-        className="flex h-10 pl-2 rounded-lg bg-white max-w-[520px] border transition duration-150 ease-in-out focus-within:ring-2 focus-within:ring-blue-500 items-center"
+        className="flex h-10 pl-2 rounded-lg bg-white max-w-[100%] border border-black transition duration-150 ease-in-out focus-within:ring-2 focus-within:ring-blue-500 items-center"
         aria-hidden="true"
       >
         {icon && <Image src={icon.img} alt={icon.alt} width={24} height={24} />}
@@ -61,7 +63,7 @@ const TextInput: React.FC<TextInputProps> = ({
         />
         {children && children}
       </div>
-    </>
+    </div>
   );
 };
 
