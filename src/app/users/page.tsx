@@ -8,13 +8,18 @@ import { SearchIcon } from "@/components/UI/icons";
 import UserTable from "./components/user-table";
 import Modal from "@/components/modal/modal";
 import { useModal } from "@/contexts/modals";
+import UserContent from "./components/user-content";
+import Link from "next/link";
+import Button from "@/components/UI/button";
 import PostList from "./components/post-list";
+import PostContent from "./components/post-content";
+import AddPostContent from "./components/add-post-content";
 
 interface UsersProps {}
 
 const Users: React.FC<UsersProps> = ({}) => {
   const [filters, setFilters] = useState("");
-  const { isOpen, closeModal } = useModal();
+  const { isOpen, closeModal, modalId } = useModal();
   const { user } = useDataContext();
 
   useEffect(() => {
@@ -26,7 +31,9 @@ const Users: React.FC<UsersProps> = ({}) => {
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters(e.target.value);
   };
-
+  const isShowPostModal = modalId?.toString().includes("post-");
+  const isShowUserModal = modalId?.toString().includes("user-");
+  const isAddPostModal = modalId?.toString().includes("add-post");
   return (
     <>
       <main className="overflow-hidden flex flex-col px-4 pt-6 ">
@@ -51,10 +58,46 @@ const Users: React.FC<UsersProps> = ({}) => {
           <PostList />
         </section>
       </main>
-      <Modal title="lorem" isModalOpen={isOpen} abortFn={closeModal}>
-        <p className="mt-2 text-sm text-gray-500">fsdfdsfsdfd</p>
-        <p>{user?.email}</p>
-      </Modal>
+      {isShowUserModal && (
+        <Modal
+          title={"User Informations"}
+          isModalOpen={isOpen}
+          footer={
+            <footer className="pt-8 flex flex-row-reverse gap-4">
+              {
+                <Link
+                  href={`/users/${user?.id}`}
+                  className="custom-button-style"
+                >
+                  {" "}
+                  Go to User{" "}
+                </Link>
+              }
+              <Button variant="secondary" type="button" onClick={closeModal}>
+                {"Close"}
+              </Button>
+            </footer>
+          }
+        >
+          <UserContent user={user} />
+        </Modal>
+      )}{" "}
+      {isShowPostModal && (
+        <Modal title={" "} isModalOpen={isOpen} abortFn={closeModal}>
+          <PostContent />
+        </Modal>
+      )}
+      {isAddPostModal && (
+        <Modal
+          title={"Add new Post"}
+          isModalOpen={isOpen}
+          abortFn={closeModal}
+          proceedFn={() => {}}
+          proceedLabel="Save"
+        >
+          <AddPostContent />
+        </Modal>
+      )}
     </>
   );
 };
