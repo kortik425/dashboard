@@ -5,15 +5,24 @@ import {
   useState,
   ReactNode,
   useCallback,
+  useReducer,
 } from "react";
 import { User, Post } from "@/interfaces/Idata";
+import {
+  Actions,
+  postReducer,
+  postInitialState,
+  StateInterface as PostStateInterface,
+} from "./posts";
 
 interface DataContextType {
   usersList: User[];
   posts: Post[];
-  fetchPosts: (userId: number) => Promise<void>;
+  fetchPostsList: (userId: number) => Promise<void>;
   fetchUser: (userId: number) => Promise<void>;
+  fetchPost: (postId: number) => Promise<void>;
   user: User | null;
+  post: PostStateInterface;
 }
 
 interface DataProviderProps {
@@ -31,7 +40,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({
   const [posts, setPosts] = useState<Post[]>([]);
   const [user, setUser] = useState<User | null>(null);
 
-  const fetchPosts = useCallback(async (userId: number) => {
+  const [post, dispatch] = useReducer(postReducer, postInitialState);
+
+  const fetchPostsList = useCallback(async (userId: number) => {
     try {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/users/${userId}/posts`
@@ -55,9 +66,38 @@ export const DataProvider: React.FC<DataProviderProps> = ({
     }
   }, []);
 
+  const fetchPost = useCallback(async (postId: number) => {
+    dispatch({ type: Actions.POST_FETCHING });
+
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${postId}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error: Failed to fetch post with ID ${postId}`);
+      }
+      const data: Post = await response.json();
+      dispatch({ type: Actions.POST_READY, payload: data });
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatch({ type: Actions.POST_ERROR, payload: error.message });
+      } else {
+        dispatch({ type: Actions.POST_ERROR, payload: String(error) });
+      }
+    }
+  }, []);
+
   return (
     <DataContext.Provider
-      value={{ usersList, posts, fetchPosts, fetchUser, user }}
+      value={{
+        usersList,
+        posts,
+        fetchPostsList,
+        fetchUser,
+        user,
+        fetchPost,
+        post,
+      }}
     >
       {children}
     </DataContext.Provider>
