@@ -12,7 +12,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({ userId }) => {
   const { fetchPosts, fetchUser } = useDataContext();
   const { openModal } = useModal();
 
-  const handleclic = (userId: number) => {
+  const handleclick = (userId: number) => {
     fetchUser(userId);
     openModal(userId);
   };
@@ -27,7 +27,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({ userId }) => {
           tooltip="Show Posts"
         />
         <IconButton
-          onClick={() => handleclic(userId)}
+          onClick={() => handleclick(userId)}
           icon={<IdcardIcon />}
           alt="Open User infos"
           tooltip="Open User infos"
