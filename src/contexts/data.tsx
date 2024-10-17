@@ -8,21 +8,23 @@ import {
   useReducer,
 } from "react";
 import { User, Post } from "@/interfaces/Idata";
+import { PostActions, postReducer, postInitialState } from "./modules/posts";
 import {
-  Actions,
-  postReducer,
-  postInitialState,
-  StateInterface as PostStateInterface,
-} from "./posts";
+  PostListAction,
+  postListReducer,
+  postListInitialState,
+} from "./modules/post-list";
 
 interface DataContextType {
   usersList: User[];
-  posts: Post[];
   fetchPostsList: (userId: number) => Promise<void>;
   fetchUser: (userId: number) => Promise<void>;
   fetchPost: (postId: number) => Promise<void>;
+  insertPost: (post: Post) => Promise<void>;
   user: User | null;
-  post: PostStateInterface;
+  post: Post | null;
+  postList: Post[];
+  status: { error: string | null; loading: boolean };
 }
 
 interface DataProviderProps {
@@ -37,20 +39,34 @@ export const DataProvider: React.FC<DataProviderProps> = ({
   initialState,
 }) => {
   const [usersList] = useState<User[]>(initialState);
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [postList, postListdispatch] = useReducer(
+    postListReducer,
+    postListInitialState
+  );
   const [user, setUser] = useState<User | null>(null);
 
   const [post, dispatch] = useReducer(postReducer, postInitialState);
 
   const fetchPostsList = useCallback(async (userId: number) => {
+    postListdispatch({ type: PostListAction.POST_LIST_FETCHING });
     try {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/users/${userId}/posts`
       );
       const data: Post[] = await response.json();
-      setPosts(data);
+      postListdispatch({ type: PostListAction.POST_LIST_READY, payload: data });
     } catch (error) {
-      console.error("Error fetching posts:", error);
+      if (error instanceof Error) {
+        postListdispatch({
+          type: PostListAction.POST_LIST_ERROR,
+          payload: error.message,
+        });
+      } else {
+        postListdispatch({
+          type: PostListAction.POST_LIST_ERROR,
+          payload: String(error),
+        });
+      }
     }
   }, []);
 
@@ -67,7 +83,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({
   }, []);
 
   const fetchPost = useCallback(async (postId: number) => {
-    dispatch({ type: Actions.POST_FETCHING });
+    dispatch({ type: PostActions.POST_FETCHING });
 
     try {
       const response = await fetch(
@@ -77,12 +93,44 @@ export const DataProvider: React.FC<DataProviderProps> = ({
         throw new Error(`Error: Failed to fetch post with ID ${postId}`);
       }
       const data: Post = await response.json();
-      dispatch({ type: Actions.POST_READY, payload: data });
+      dispatch({ type: PostActions.POST_READY, payload: data });
     } catch (error) {
       if (error instanceof Error) {
-        dispatch({ type: Actions.POST_ERROR, payload: error.message });
+        dispatch({ type: PostActions.POST_ERROR, payload: error.message });
       } else {
-        dispatch({ type: Actions.POST_ERROR, payload: String(error) });
+        dispatch({ type: PostActions.POST_ERROR, payload: String(error) });
+      }
+    }
+  }, []);
+
+  const insertPost = useCallback(async (newPost: Post) => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/`,
+        {
+          method: "POST",
+          body: JSON.stringify(newPost),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error: Failed to POST new post`);
+      }
+      const data: Post = await response.json();
+      postListdispatch({
+        type: PostListAction.POST_LIST_INSERT,
+        payload: data,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        postListdispatch({
+          type: PostListAction.POST_LIST_ERROR,
+          payload: error.message,
+        });
+      } else {
+        postListdispatch({
+          type: PostListAction.POST_LIST_ERROR,
+          payload: String(error),
+        });
       }
     }
   }, []);
@@ -91,12 +139,17 @@ export const DataProvider: React.FC<DataProviderProps> = ({
     <DataContext.Provider
       value={{
         usersList,
-        posts,
+        postList: postList.posts,
+        post: post.post,
+        user,
         fetchPostsList,
         fetchUser,
-        user,
         fetchPost,
-        post,
+        insertPost,
+        status: {
+          error: postList.error || post.error || null,
+          loading: postList.loading || post.loading,
+        },
       }}
     >
       {children}

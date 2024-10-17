@@ -6,12 +6,13 @@ interface PostContentProps {
 }
 
 const PostContent: React.FC<PostContentProps> = ({}) => {
-  const { post } = useDataContext();
-  if (post.loading) return <h1 className="page-heading">...Loading</h1>;
+  const { post, status } = useDataContext();
+  if (status.loading) return <h1 className="page-heading">...Loading</h1>;
+  if (status.error) return <h1 className="page-heading">{status.error}</h1>;
   return (
     <div>
-      <h1 className="page-heading">{post.post?.title}</h1>
-      <p>{post.post?.body}</p>
+      <h1 className="page-heading">{post?.title}</h1>
+      <p>{post?.body}</p>
     </div>
   );
 };

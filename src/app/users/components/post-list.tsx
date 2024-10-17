@@ -8,20 +8,20 @@ interface PostListProps {
 }
 
 const PostList: React.FC<PostListProps> = ({}) => {
-  const { fetchPost, posts, user } = useDataContext();
-  const { openModal } = useModal();
+  const { fetchPost, postList, user } = useDataContext();
 
+  const { openModal } = useModal();
   const showPost = (e: React.MouseEvent, postId: number) => {
     fetchPost(postId);
     openModal(`post-${postId}`);
   };
-  const isEmpty = posts.length === 0;
+  const isEmpty = postList.length === 0;
   const isUnselected = false; //!userId;
 
   return (
     <section className="h-[100%] flex flex-col flex-1 max-w-96">
       <header className="flex justify-between">
-        <h2>Posts {user?.username}</h2>
+        <h2>postList {user?.username}</h2>
         <button
           onClick={() => {
             openModal("add-post");
@@ -41,8 +41,8 @@ const PostList: React.FC<PostListProps> = ({}) => {
         {isEmpty && !isUnselected && (
           <h1 className="text-secondaryLight">No post to show</h1>
         )}
-        {posts.length !== 0 &&
-          posts.map((post) => {
+        {postList.length !== 0 &&
+          postList.map((post) => {
             return (
               <Card
                 key={post.id}
