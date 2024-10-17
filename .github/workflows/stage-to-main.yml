@@ -47,8 +47,7 @@ jobs:
           fi
 
       - name: Create New Pull Request from stage to main
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: Add Pull Request
-          title: "[${{ env.PR_TITLE }}]"
-          body: "Automatically created pull request from stage to main"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh pr create --base main --head stage --title "${{ env.PR_TITLE }}" --body "Automatically created pull request from stage to main."
