@@ -22,7 +22,7 @@ body {
     @apply font-bold text-black text-[32px];
   }
 
-  h2 {
+  h2, .stilised-h2 {
     @apply font-bold text-black text-2xl;
   }
 
