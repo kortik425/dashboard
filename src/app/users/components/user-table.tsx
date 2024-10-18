@@ -52,7 +52,7 @@ const customFilterFn = (
 
 const UserTable: React.FC<UserTableProps> = ({ filters }) => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 7 });
-  const { usersList } = useDataContext();
+  const { usersList, user } = useDataContext();
   const userTable = useReactTable({
     data: usersList as CompleteUser[],
     columns,
@@ -70,7 +70,11 @@ const UserTable: React.FC<UserTableProps> = ({ filters }) => {
         <TableHeader headerGroups={userTable.getHeaderGroups()} />
         <tbody>
           {userTable.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} row={row} />
+            <TableRow
+              key={row.id}
+              row={row}
+              isSelected={row.original.id == user?.id}
+            />
           ))}
         </tbody>
       </table>

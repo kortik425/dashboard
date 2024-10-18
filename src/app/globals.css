@@ -66,6 +66,9 @@ body {
   tbody tr:nth-of-type(even) {
     @apply bg-secondaryLight;
   }
+  tbody tr.selected-row {
+    @apply bg-secondaryDark text-primaryLight;
+  }
   tr td:first-of-type {
     border-top-left-radius: 0.5em;
     border-bottom-left-radius: 0.5em;

@@ -9,10 +9,10 @@ interface ActionsColumnProps {
 }
 
 const ActionsColumn: React.FC<ActionsColumnProps> = ({ userId }) => {
-  const { fetchPostsList, fetchUser } = useDataContext();
+  const { fetchPostsList, fetchUser, user } = useDataContext();
   const { openModal } = useModal();
-
-  const handleclick = (userId: number) => {
+  const isSelected = userId === user?.id;
+  const handleclick = () => {
     fetchUser(userId);
     openModal(`user-${userId}`);
   };
@@ -22,13 +22,13 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({ userId }) => {
       <div className="flex gap-2">
         <IconButton
           onClick={() => fetchPostsList(userId)}
-          icon={<OverviewIcon />}
+          icon={<OverviewIcon fill={isSelected ? "#e5e7eb" : "#000"} />}
           alt={`Posts for user: ${userId}`}
           tooltip="Show Posts"
         />
         <IconButton
-          onClick={() => handleclick(userId)}
-          icon={<IdcardIcon />}
+          onClick={() => handleclick()}
+          icon={<IdcardIcon fill={isSelected ? "#e5e7eb" : "#000"} />}
           alt="Open User infos"
           tooltip="Open User infos"
         />
