@@ -45,8 +45,7 @@ The same though has been brought for the interfaces as each interface is general
 
 Ideally for a project of this size and given that NextJS handles fetching and caching out of the box in Server Rendered Components, it would have been fine to keep the states self contained in their components and to rely on composition or a bit of prop drilling to pass down the data. However for the sake of showcasing ContextAPI and useReducer was used to manage the state with the intention of keeping it simple and within the natural capacity of React. The contexts folder contains the modules of each reducer. Each module contains the actions the state and the reducer of a specific part of the application. This is similar to the Duck pattern used in redux.
 
-**Deployment, CI/CD\
-**
+**Deployment, CI/CD**
 
 The code is saved in Github where 3 Workflows are set: 
 
@@ -55,16 +54,14 @@ The code is saved in Github where 3 Workflows are set: 
 3.  A third workflow that should create a new Pull request from stage to master whenever the PR from stage is merged. This is failing though because GH don't allow new empty PRs.**\
     **
 
-**What to improve\
-**
+**What to improve**
 
-**Use Redux\
-**Although Context + UseReducer was used for simplicity Redux offer more functionality and control, assuming that the application would scale to have a more complex state structure. By using Redux persist we would be able to persist the state, the state management with the API call would be more reliable and debugging would be much easier through Redux Devtools\
-**\
+**Use Redux**
+Although Context + UseReducer was used for simplicity Redux offer more functionality and control, assuming that the application would scale to have a more complex state structure. By using Redux persist we would be able to persist the state, the state management with the API call would be more reliable and debugging would be much easier through Redux Devtools\
 
-Add Testing**
+**Add Testing**
 It would be good to be able to add a workflow that prevent me to merge to stage if testing fails
 
-**Add Responsiveness
-
-**
+**Other**
+The dashboard is built with the assumption that would be used on desktop environment and therefore the responsiveness was not made a priority
+The dashboard is navigable for visually impaired people and has been tested with VoiceOver from macOS but still need more testing
