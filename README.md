@@ -24,10 +24,6 @@ npm run dev
 
 ```
 
-Alternatively you can see the project here
-
-https://dashboard-qkcpb901n-gian-carlo-bandrils-projects.vercel.app/
-
 **Architecture Decisions**
 
 **\
