@@ -32,12 +32,12 @@ https://dashboard-qkcpb901n-gian-carlo-bandrils-projects.vercel.app/
 
 **\
 File Structure**\
-From the src folder the structure of the project has the default app folder, a components folder, a context, hooks and interfaces\
+From the src folder the structure of the project has the default ```app``` folder, a ```components``` folder, a ```context```, ```hooks``` and ```interfaces\```
 The components are placed in three different locations based on their scope: 
 
-1.  For very specific components with low reusability a component folder is placed inside the page folder to be used within its immediate context.
-2.  Complex but reusable components are placed inside the /components folder
-3.  Blocks of UI components such as text input are placed in the UI folder within the components folder
+1.  For very specific components with low reusability a ```component``` folder is placed inside the page folder to be used within its immediate context.
+2.  Complex but reusable components are placed inside the ```/components``` folder
+3.  Blocks of UI components such as text input are placed in the ```UI``` folder within the components folder
 
 The same though has been brought for the interfaces as each interface is generally within the file that use them. Generic interfaces that defines, for example the result of external apis that might be reused through out many files, have been put in the interface folder.
 
