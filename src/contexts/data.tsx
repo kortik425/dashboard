@@ -79,18 +79,22 @@ export const DataProvider: React.FC<DataProviderProps> = ({
     }
   }, []);
 
-  const fetchUser = useCallback(async (userId: number) => {
-    userDispatcher({ type: UserActions.USER_FETCHING });
-    try {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/users/${userId}`
-      );
-      const data: User = await response.json();
-      userDispatcher({ type: UserActions.USER_READY, payload: data });
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  }, []);
+  const fetchUser = useCallback(
+    async (userId: number) => {
+      userDispatcher({ type: UserActions.USER_FETCHING });
+      try {
+        fetchPostsList(userId);
+        const response = await fetch(
+          `https://jsonplaceholder.typicode.com/users/${userId}`
+        );
+        const data: User = await response.json();
+        userDispatcher({ type: UserActions.USER_READY, payload: data });
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    },
+    [fetchPostsList]
+  );
 
   const fetchPost = useCallback(
     async (postId: number) => {

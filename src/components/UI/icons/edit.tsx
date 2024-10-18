@@ -1,7 +1,7 @@
 import React from "react";
 
 //Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools
-const IdCardIcon = ({}) => {
+const EditIcon = ({ ...rest }) => {
   return (
     <svg
       fill="#000000"
@@ -9,6 +9,7 @@ const IdCardIcon = ({}) => {
       height="24px"
       viewBox="0 -32 576 576"
       xmlns="http://www.w3.org/2000/svg"
+      {...rest}
     >
       <g id="SVGRepo_bgCarrier" strokeWidth="0" />
 
@@ -25,4 +26,4 @@ const IdCardIcon = ({}) => {
   );
 };
 
-export default IdCardIcon;
+export default EditIcon;

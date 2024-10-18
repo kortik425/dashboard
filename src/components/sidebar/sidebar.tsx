@@ -1,5 +1,6 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import { UsersIcon, HomeIcon, SettingsIcon } from "../UI/icons";
 
 interface SidebarProps {
   // define your props here
@@ -7,14 +8,26 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({}) => {
   return (
-    <nav className="h-[100vh] w-96">
-      <Link className="text-white block" href="/">
+    <nav className="h-screen w-60">
+      <Link
+        className="flex gap-2 items-center stilised-h2 ml-6 mt-4 hover:underline text-white"
+        href="/"
+      >
+        <HomeIcon fill="#fff" />
         Home
       </Link>
-      <Link className="text-white block" href="/users">
+      <Link
+        className="flex gap-2 items-center stilised-h2 ml-6 mt-4 hover:underline text-white"
+        href="/users"
+      >
+        <UsersIcon fill="#fff" />
         Users
       </Link>
-      <Link className="text-white block" href="/settings">
+      <Link
+        className="flex gap-2 items-center stilised-h2 ml-6 mt-4 hover:underline text-white"
+        href="/settings"
+      >
+        <SettingsIcon fill="#fff" />
         Settings
       </Link>
     </nav>

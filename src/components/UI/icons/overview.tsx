@@ -1,7 +1,7 @@
 import React from "react";
 
 //Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools
-const OverviewIcon = ({}) => {
+const OverviewIcon = ({ ...rest }) => {
   return (
     <svg
       fill="#000000"
@@ -9,6 +9,7 @@ const OverviewIcon = ({}) => {
       height="24px"
       viewBox="0 0 512 512"
       xmlns="http://www.w3.org/2000/svg"
+      {...rest}
     >
       <g id="SVGRepo_bgCarrier" strokeWidth="0" />
 

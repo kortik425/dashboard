@@ -26,7 +26,7 @@ const Users: React.FC<UsersProps> = ({}) => {
     return () => {
       if (isOpen) closeModal();
     };
-  }, [closeModal]);
+  }, [closeModal, isOpen]);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters(e.target.value);

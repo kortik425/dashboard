@@ -7,3 +7,4 @@ export { default as IdcardIcon } from "./idcard";
 export { default as SettingsIcon } from "./settings";
 export { default as TrashIcon } from "./trash";
 export { default as UsersIcon } from "./users";
+export { default as HomeIcon } from "./home";
