@@ -46,7 +46,7 @@ const customFilterFn = (
 ) => {
   const search = `${row.original.name} ${row.original.username}`
     .toLowerCase()
-    .includes(filterValue);
+    .includes(filterValue.toLowerCase());
   return search;
 };
 
