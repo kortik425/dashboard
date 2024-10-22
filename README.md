@@ -55,6 +55,9 @@ The code is saved in Github where 3 Workflows are set: 
 **Use Redux**
 Although Context + UseReducer was used for simplicity Redux offer more functionality and control, assuming that the application would scale to have a more complex state structure. By using Redux persist we would be able to persist the state, the state management with the API call would be more reliable and debugging would be much easier through Redux Devtools\
 
+EDIT: I realised during the weekend that I made many poor decisions, I am on the process of fixing those decisions through a cleaner project.
+https://github.com/kortik425/dashboard-test
+
 **Add Testing**
 It would be good to be able to add a workflow that prevent me to merge to stage if testing fails
 
